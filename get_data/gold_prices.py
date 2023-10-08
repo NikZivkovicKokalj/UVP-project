@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import json
+import os
 
 def get_data():
     """
@@ -27,6 +28,19 @@ def get_data():
     df = pd.DataFrame(table_data[2:], columns=table_data[1])
     df.to_csv('table_data.csv', index=False)
 
+    folder_path = 'UVP-project\data'
+    file_name = 'gold_prices.json'
+
+
+    directory_path = os.path.join(os.getcwd(), folder_path)
+
+
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+
+
+    file_path = os.path.join(directory_path, file_name)
+
     gold_prices_JSON = {}
     for index, row in enumerate(table_data):
         if index > 2:
@@ -35,11 +49,24 @@ def get_data():
             gold_prices_JSON[row[0]]['Annual percentage change'] = row[6]
 
     jsonString = json.dumps(gold_prices_JSON)
-    jsonFile = open("gold_prices.json", "w")
-    jsonFile.write(jsonString)
-    jsonFile.close()
-        
+
+
+    with open(file_path, "w") as jsonFile:
+        jsonFile.write(jsonString)
+
+
+get_data()
 #all prices are for ounce of gold
+
+
+
+
+
+
+
+
+
+
 
 
 

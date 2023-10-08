@@ -9,28 +9,61 @@ def get_data():
     folder_url = "https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG?downloadformat=csv"
     response = requests.get(folder_url)
 
+
+    folder_path = 'UVP-project\get_data'
+    file_name = 'downloaded_folder.zip'
+
+
+    directory_path = os.path.join(os.getcwd(), folder_path)
+
+
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+
+
+    file_path = os.path.join(directory_path, file_name)
+
+
     # Check if the request was successful (status code 200)
     if response.status_code == 200:
-        with open("downloaded_folder.zip", "wb") as file:
+        with open(file_path, "wb") as file:
             file.write(response.content)
 
-    # Specify the path to the downloaded zip file
+    # Specifying the path to the downloaded zip file
     zip_file_path = "downloaded_folder.zip"
+    folder = "UVP-project\get_data"
+    # Specifying the folder where I want to extract the contents
+    extraction_folder = os.path.join(os.getcwd(), folder)
 
-    # Specify the folder where you want to extract the contents
-    extraction_folder = os.getcwd()
-
-    # Extract the contents of the zip file
+    # Extracting the contents of the zip file
     with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
         zip_ref.extractall(extraction_folder)
 
-    with open('API_FP.CPI.TOTL.ZG_DS2_en_csv_v2_5795712.csv', 'r') as csv_reader:
+
+    csv_file_path = os.path.join(extraction_folder, 'API_FP.CPI.TOTL.ZG_DS2_en_csv_v2_5871597.csv')
+
+    with open(csv_file_path, 'r') as csv_reader:
         inflation_csv = csv.reader(csv_reader)
         years = []
         for i, row in enumerate(inflation_csv):
             if i == 4:
                 years = row[5:][:-1]
         csv_reader.seek(0)
+
+
+        folder_path = 'UVP-project\data'
+        file_name = 'inflation.json'
+
+
+        directory_path = os.path.join(os.getcwd(), folder_path)
+
+
+        if not os.path.exists(directory_path):
+            os.makedirs(directory_path)
+
+
+        file_path = os.path.join(directory_path, file_name)
+
         
         countries_JSON = {}
 
@@ -41,9 +74,14 @@ def get_data():
                     countries_JSON[row[0]][years[i]] = row[5 + i]
         
         jsonString = json.dumps(countries_JSON)
-        jsonFile = open("inflation.json", "w")
-        jsonFile.write(jsonString)
-        jsonFile.close()
+        with open(file_path, "w") as jsonFile:
+            jsonFile.write(jsonString)
+
+
+
+get_data()
+
+
 
 
 
