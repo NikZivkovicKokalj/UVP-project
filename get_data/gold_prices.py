@@ -6,13 +6,13 @@ import os
 
 def get_data():
     """
-    gets the price of gold for...
+    gets the price of gold for each year from 1969 to 2023
     """
     url = 'https://www.macrotrends.net/1333/historical-gold-prices-100-year-chart'
     response = requests.get(url, headers= {'User-Agent': 'Mozilla/5.0'})
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    # Find the table with the correct identifier (inspect the HTML source code)
+    # parsing html to get the right table
     table = soup.find('table', {'class': 'table'})
 
     table_data = []
@@ -24,23 +24,23 @@ def get_data():
         table_data.append(row_data)
 
 
-    #0th element is table name 1st element are column names 2nd and forward elements are data
+    # 0th element is table name 1st element are column names 2nd and forward elements are data
     df = pd.DataFrame(table_data[2:], columns=table_data[1])
     df.to_csv('table_data.csv', index=False)
+
 
     folder_path = 'UVP-project\data'
     file_name = 'gold_prices.json'
 
-
     directory_path = os.path.join(os.getcwd(), folder_path)
-
 
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
 
-
     file_path = os.path.join(directory_path, file_name)
 
+
+    # making content of the file
     gold_prices_JSON = {}
     for index, row in enumerate(table_data):
         if index > 2:

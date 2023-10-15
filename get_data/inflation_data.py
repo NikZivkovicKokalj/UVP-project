@@ -6,6 +6,9 @@ import json
 import csv
 
 def get_data():
+    """
+    gets the inflation rate of each country for every year since documenting inflation has started in that country
+    """
     folder_url = "https://api.worldbank.org/v2/en/indicator/FP.CPI.TOTL.ZG?downloadformat=csv"
     response = requests.get(folder_url)
 
@@ -29,10 +32,10 @@ def get_data():
         with open(file_path, "wb") as file:
             file.write(response.content)
 
-    # Specifying the path to the downloaded zip file
+    # Specifying the path to the downloaded zip file and folder where i want to extract contents
     zip_file_path = "downloaded_folder.zip"
     folder = "UVP-project\get_data"
-    # Specifying the folder where I want to extract the contents
+
     extraction_folder = os.path.join(os.getcwd(), folder)
 
     # Extracting the contents of the zip file
@@ -50,7 +53,7 @@ def get_data():
                 years = row[5:][:-1]
         csv_reader.seek(0)
 
-
+        # as in other files i want file to develop in data folder
         folder_path = 'UVP-project\data'
         file_name = 'inflation.json'
 
@@ -64,7 +67,7 @@ def get_data():
 
         file_path = os.path.join(directory_path, file_name)
 
-        
+        # making content of the file       
         countries_JSON = {}
 
         for index, row in enumerate(inflation_csv):
@@ -80,6 +83,7 @@ def get_data():
 
 
 get_data()
+
 
 
 
